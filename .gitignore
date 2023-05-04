@@ -1,0 +1,4 @@
+# .gitignore
+.vscode/*
+CARD_SUBWAY_MONTH_202303.csv
+CARD_SUBWAY_MONTH_202303_copy.csv

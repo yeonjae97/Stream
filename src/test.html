@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+    integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // XML, JSON, CSV => 데이터 대상 확장자
+    // 데이터 가공을 통해서 스트림(stream)을 활용해보도록 하자
+    // 데이터를 끌어올 대상 파일의 확장자는 대부분 csv로 끝난다.
+
+    let arr = [
+      {
+        사용일자: 20230301,
+        노선명: '수인선',
+        역명: '달월',
+        승차총승객수: 62,
+        하차총승객수: 61,
+        등록일자: '20230304'
+      }
+      // {
+      //   사용일자: 20230301,
+      //   노선명: '수인선',
+      //   역명: '사리',
+      //   승차총승객수: 3237,
+      //   하차총승객수: 2748,
+      //   등록일자: '20230304'
+      // },
+      // {
+      //   사용일자: 20230301,
+      //   노선명: '수인선',
+      //   역명: '야목',
+      //   승차총승객수: 230,
+      //   하차총승객수: 196,
+      //   등록일자: '20230304'
+      // },
+      // {
+      //   사용일자: 20230301,
+      //   노선명: '수인선',
+      //   역명: '어천',
+      //   승차총승객수: 751,
+      //   하차총승객수: 746,
+      //   등록일자: '20230304'
+      // }
+    ];
+    $.ajax({
+      url: 'CARD_SUBWAY_MONTH_202303.csv',
+      success: function (data) {
+        // console.log(data);
+        // console.log(data.length);
+        // console.log(data.indexOf('\n'));
+
+
+        let arr1 = data.split('\n');
+        // console.log(arr1);
+        let resultArray = [];
+        for (let i in arr1) {
+          if (arr1[i].length == 0) {
+            continue;
+          }
+          if (i != 0) {
+            // // 컬럼명
+            // console.log("컬럼명:", arr1[i]);
+            // let columnArray = arr1[i].split(',');
+            // console.log(columnArray);
+
+
+            // 튜플
+            let columnArray = arr1[0].split(',');
+            let tupleArray = arr1[i].split(',');
+            // console.log(tupleArray);
+            let obj = {};
+            for (let j in columnArray) {
+              obj[columnArray[j].replaceAll("\"", "").replaceAll(" ", "")] = tupleArray[j].replaceAll('"', "");
+            }
+            // obj[columnArray[1].replaceAll("\", "")] = tupleArray[0];
+            resultArray.push(obj);
+          }
+        }
+        // console.log(resultArray[0]);
+
+        // filter, map
+
+        // filter 2호선 // map 승차총승객, 하차총승객 >> XXX + 명,
+        resultArray = resultArray
+          .filter(obj => obj.노선명 === '2호선')
+          .filter(obj => obj.사용일자 === '20230301')
+          // 반환 값에 비어있으면 반환 값을 undefined로 할당한다.
+          .map((obj) => {
+            // 문장이 한문장이 아닐경우에 반드시 return이라는 키워드를 써야 한다.
+            obj.승차총승객수 += '명'
+            obj.하차총승객수 += '명'
+            return obj;
+          });
+        // 데이터 가공 마지막 단계
+
+
+
+
+        // for (let i in resultArray) {
+        //   resultArray[i].filter(function(obj){
+        //     obj.노선명 
+        //   });
+        console.log(resultArray);
+
+      }
+    })
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
